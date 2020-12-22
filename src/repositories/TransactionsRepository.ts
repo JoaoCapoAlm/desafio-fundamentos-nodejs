@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import Transaction from '../models/Transaction';
 
 interface Balance {
@@ -54,8 +55,8 @@ class TransactionsRepository {
   public create({ title, value, type }: CreateTransationDTO): Transaction {
     const transaction = new Transaction({
       title,
-      value,
       type,
+      value,
     });
 
     this.transactions.push(transaction);

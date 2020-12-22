@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 import TransactionsRepository from '../repositories/TransactionsRepository';
 import CreateTransactionService from '../services/CreateTransactionService';
 
@@ -9,10 +8,10 @@ const transactionsRepository = new TransactionsRepository();
 
 transactionRouter.get('/', (request, response) => {
   try {
-    const transction = transactionsRepository.all();
-    const ballance = transactionsRepository.getBalance();
+    const transactions = transactionsRepository.all();
+    const balance = transactionsRepository.getBalance();
 
-    return response.json({ transction, ballance });
+    return response.json({ transactions, balance });
   } catch (err) {
     return response.status(400).json({ error: err.message });
   }
@@ -23,9 +22,7 @@ transactionRouter.post('/', (request, response) => {
     const { title, value, type } = request.body;
 
     if (type !== 'outcome' && type !== 'income') {
-      return response
-        .status(400)
-        .json({ error: 'Tipo incorreto! É aceito apenas outcome ou income.' });
+      throw Error('Tipo incorreto! É aceito apenas outcome ou income.');
     }
 
     const createTransaction = new CreateTransactionService(
@@ -35,7 +32,7 @@ transactionRouter.post('/', (request, response) => {
     if (type === 'outcome') {
       const { total } = transactionsRepository.getBalance();
       if (value > total) {
-        return response.status(400).json({ error: 'Saldo insuficiente!' });
+        throw Error('Saldo insuficiente!');
       }
     }
 
